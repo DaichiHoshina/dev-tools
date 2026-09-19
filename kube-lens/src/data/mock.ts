@@ -834,13 +834,13 @@ export const MOCK_LOG = `{"timestamp":"2026-02-21T10:00:01.234Z","level":"info",
 {"timestamp":"2026-02-21T10:00:02.345Z","level":"info","service":"api-server","message":"Health check endpoint registered","path":"/healthz"}
 {"timestamp":"2026-02-21T10:00:03.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/healthz","status":200,"latency_ms":2}
 {"timestamp":"2026-02-21T10:00:05.678Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/shipments","status":201,"latency_ms":45,"request_id":"req-001-abc"}
-{"timestamp":"2026-02-21T10:00:06.123Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-001","carrier":"yamato","destination":"Tokyo"}
+{"timestamp":"2026-02-21T10:00:06.123Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-001","carrier":"carrier-a","destination":"Tokyo"}
 {"timestamp":"2026-02-21T10:00:08.456Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments/SHP-20260221-001","status":200,"latency_ms":12,"request_id":"req-002-def"}
 {"timestamp":"2026-02-21T10:00:10.789Z","level":"info","service":"api-server","message":"HTTP request","method":"PUT","path":"/api/v1/shipments/SHP-20260221-001/status","status":200,"latency_ms":28,"request_id":"req-003-ghi"}
 {"timestamp":"2026-02-21T10:00:11.234Z","level":"info","service":"api-server","message":"Shipment status updated","shipment_id":"SHP-20260221-001","old_status":"pending","new_status":"processing"}
 {"timestamp":"2026-02-21T10:00:15.567Z","level":"warn","service":"api-server","message":"Slow query detected","query":"SELECT * FROM shipments","latency_ms":350,"threshold_ms":300}
 {"timestamp":"2026-02-21T10:00:20.012Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/shipments","status":201,"latency_ms":38,"request_id":"req-004-jkl"}
-{"timestamp":"2026-02-21T10:00:20.567Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-002","carrier":"sagawa","destination":"Osaka"}
+{"timestamp":"2026-02-21T10:00:20.567Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-002","carrier":"carrier-b","destination":"Osaka"}
 {"timestamp":"2026-02-21T10:00:25.890Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":18,"request_id":"req-005-mno"}
 {"timestamp":"2026-02-21T10:00:30.123Z","level":"error","service":"api-server","message":"Failed to send notification","error":"connection refused","endpoint":"http://notification-service:8080/api/v1/notify","shipment_id":"SHP-20260221-001"}
 {"timestamp":"2026-02-21T10:00:30.456Z","level":"warn","service":"api-server","message":"Notification retry scheduled","shipment_id":"SHP-20260221-001","retry_count":1,"next_retry_ms":5000}
@@ -859,18 +859,18 @@ export const MOCK_LOG = `{"timestamp":"2026-02-21T10:00:01.234Z","level":"info",
 {"timestamp":"2026-02-21T10:01:05.890Z","level":"info","service":"api-server","message":"Notification retry succeeded","shipment_id":"SHP-20260221-001","retry_count":1}
 {"timestamp":"2026-02-21T10:01:10.123Z","level":"info","service":"api-server","message":"HTTP request","method":"PUT","path":"/api/v1/shipments/SHP-20260221-001/status","status":200,"latency_ms":31,"request_id":"req-011-efg"}
 {"timestamp":"2026-02-21T10:01:10.456Z","level":"info","service":"api-server","message":"Shipment status updated","shipment_id":"SHP-20260221-001","old_status":"processing","new_status":"shipped"}
-{"timestamp":"2026-02-21T10:01:15.789Z","level":"debug","service":"api-server","message":"Cache hit","key":"carrier:yamato:config","ttl_remaining":285}
+{"timestamp":"2026-02-21T10:01:15.789Z","level":"debug","service":"api-server","message":"Cache hit","key":"carrier:carrier-a:config","ttl_remaining":285}
 {"timestamp":"2026-02-21T10:01:20.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":14,"request_id":"req-012-hij"}
 {"timestamp":"2026-02-21T10:01:25.345Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/bulk-shipments","status":202,"latency_ms":89,"request_id":"req-013-klm"}
 {"timestamp":"2026-02-21T10:01:25.678Z","level":"info","service":"api-server","message":"Bulk shipment job enqueued","job_id":"bulk-job-001","count":15}
 {"timestamp":"2026-02-21T10:01:30.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments/SHP-20260221-003","status":200,"latency_ms":9,"request_id":"req-014-nop"}
-{"timestamp":"2026-02-21T10:01:35.345Z","level":"warn","service":"api-server","message":"Rate limit approaching for carrier API","carrier":"yamato","requests_remaining":50,"window":"1m"}
+{"timestamp":"2026-02-21T10:01:35.345Z","level":"warn","service":"api-server","message":"Rate limit approaching for carrier API","carrier":"carrier-a","requests_remaining":50,"window":"1m"}
 {"timestamp":"2026-02-21T10:01:40.678Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":16,"request_id":"req-015-qrs"}
 {"timestamp":"2026-02-21T10:01:45.012Z","level":"info","service":"api-server","message":"Bulk shipment job completed","job_id":"bulk-job-001","succeeded":14,"failed":1}
 {"timestamp":"2026-02-21T10:01:45.345Z","level":"error","service":"api-server","message":"Bulk shipment item failed","job_id":"bulk-job-001","item_index":7,"error":"invalid postal code: 9999999"}
 {"timestamp":"2026-02-21T10:01:50.678Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/healthz","status":200,"latency_ms":2}
 {"timestamp":"2026-02-21T10:01:55.012Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/shipments","status":201,"latency_ms":41,"request_id":"req-016-tuv"}
-{"timestamp":"2026-02-21T10:01:55.345Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-004","carrier":"yamato","destination":"Sapporo"}
+{"timestamp":"2026-02-21T10:01:55.345Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-004","carrier":"carrier-a","destination":"Sapporo"}
 {"timestamp":"2026-02-21T10:02:00.678Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":11,"request_id":"req-017-wxy"}
 {"timestamp":"2026-02-21T10:02:05.012Z","level":"debug","service":"api-server","message":"Background job triggered","job":"shipment_status_sync","interval_sec":300}
 {"timestamp":"2026-02-21T10:02:10.345Z","level":"info","service":"api-server","message":"Shipment status synced from carrier","synced":12,"updated":3}
@@ -879,12 +879,12 @@ export const MOCK_LOG = `{"timestamp":"2026-02-21T10:00:01.234Z","level":"info",
 {"timestamp":"2026-02-21T10:02:20.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/reports/daily","status":200,"latency_ms":234,"request_id":"req-019-cde"}
 {"timestamp":"2026-02-21T10:02:25.345Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/metrics","status":200,"latency_ms":4}
 {"timestamp":"2026-02-21T10:02:30.678Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/webhooks/carrier-update","status":200,"latency_ms":18,"request_id":"req-020-fgh"}
-{"timestamp":"2026-02-21T10:02:31.012Z","level":"info","service":"api-server","message":"Carrier webhook processed","carrier":"sagawa","event":"status_update","affected_shipments":3}
+{"timestamp":"2026-02-21T10:02:31.012Z","level":"info","service":"api-server","message":"Carrier webhook processed","carrier":"carrier-b","event":"status_update","affected_shipments":3}
 {"timestamp":"2026-02-21T10:02:35.345Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":13,"request_id":"req-021-ijk"}
-{"timestamp":"2026-02-21T10:02:40.678Z","level":"warn","service":"api-server","message":"Cache miss","key":"carrier:sagawa:config","fetching_from_db":true}
-{"timestamp":"2026-02-21T10:02:41.012Z","level":"info","service":"api-server","message":"Cache populated","key":"carrier:sagawa:config","ttl_sec":300}
+{"timestamp":"2026-02-21T10:02:40.678Z","level":"warn","service":"api-server","message":"Cache miss","key":"carrier:carrier-b:config","fetching_from_db":true}
+{"timestamp":"2026-02-21T10:02:41.012Z","level":"info","service":"api-server","message":"Cache populated","key":"carrier:carrier-b:config","ttl_sec":300}
 {"timestamp":"2026-02-21T10:02:45.345Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/shipments","status":201,"latency_ms":44,"request_id":"req-022-lmn"}
-{"timestamp":"2026-02-21T10:02:45.678Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-005","carrier":"sagawa","destination":"Nagoya"}
+{"timestamp":"2026-02-21T10:02:45.678Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-005","carrier":"carrier-b","destination":"Nagoya"}
 {"timestamp":"2026-02-21T10:02:50.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/healthz","status":200,"latency_ms":2}
 {"timestamp":"2026-02-21T10:02:55.345Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments/SHP-20260221-005","status":200,"latency_ms":10,"request_id":"req-023-opq"}
 {"timestamp":"2026-02-21T10:03:00.678Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":15,"request_id":"req-024-rst"}
@@ -899,13 +899,13 @@ export const MOCK_LOG = `{"timestamp":"2026-02-21T10:00:01.234Z","level":"info",
 {"timestamp":"2026-02-21T10:03:30.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/metrics","status":200,"latency_ms":4}
 {"timestamp":"2026-02-21T10:03:35.345Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":14,"request_id":"req-029-ghi"}
 {"timestamp":"2026-02-21T10:03:40.678Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/shipments","status":201,"latency_ms":43,"request_id":"req-030-jkl"}
-{"timestamp":"2026-02-21T10:03:40.901Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-007","carrier":"yamato","destination":"Sendai"}
+{"timestamp":"2026-02-21T10:03:40.901Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-007","carrier":"carrier-a","destination":"Sendai"}
 {"timestamp":"2026-02-21T10:03:45.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/healthz","status":200,"latency_ms":2}
 {"timestamp":"2026-02-21T10:03:50.345Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments/SHP-20260221-006","status":200,"latency_ms":9,"request_id":"req-031-mno"}
 {"timestamp":"2026-02-21T10:03:55.678Z","level":"warn","service":"api-server","message":"Disk usage high","path":"/data/logs","used_percent":82,"threshold_percent":80}
 {"timestamp":"2026-02-21T10:04:00.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":13,"request_id":"req-032-pqr"}
 {"timestamp":"2026-02-21T10:04:05.345Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/shipments","status":201,"latency_ms":47,"request_id":"req-033-stu"}
-{"timestamp":"2026-02-21T10:04:05.678Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-008","carrier":"sagawa","destination":"Kobe"}
+{"timestamp":"2026-02-21T10:04:05.678Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-008","carrier":"carrier-b","destination":"Kobe"}
 {"timestamp":"2026-02-21T10:04:10.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/reports/weekly","status":200,"latency_ms":412,"request_id":"req-034-vwx"}
 {"timestamp":"2026-02-21T10:04:15.345Z","level":"info","service":"api-server","message":"HTTP request","method":"DELETE","path":"/api/v1/shipments/SHP-20260221-007","status":204,"latency_ms":20,"request_id":"req-035-yza"}
 {"timestamp":"2026-02-21T10:04:15.678Z","level":"info","service":"api-server","message":"Shipment cancelled","shipment_id":"SHP-20260221-007","reason":"duplicate_order"}
@@ -918,7 +918,7 @@ export const MOCK_LOG = `{"timestamp":"2026-02-21T10:00:01.234Z","level":"info",
 {"timestamp":"2026-02-21T10:04:40.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/metrics","status":200,"latency_ms":3}
 {"timestamp":"2026-02-21T10:04:45.345Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments","status":200,"latency_ms":12,"request_id":"req-039-klm"}
 {"timestamp":"2026-02-21T10:04:50.678Z","level":"info","service":"api-server","message":"HTTP request","method":"POST","path":"/api/v1/shipments","status":201,"latency_ms":40,"request_id":"req-040-nop"}
-{"timestamp":"2026-02-21T10:04:50.901Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-009","carrier":"yamato","destination":"Kyoto"}
+{"timestamp":"2026-02-21T10:04:50.901Z","level":"info","service":"api-server","message":"Shipment created","shipment_id":"SHP-20260221-009","carrier":"carrier-a","destination":"Kyoto"}
 {"timestamp":"2026-02-21T10:04:55.012Z","level":"info","service":"api-server","message":"HTTP request","method":"GET","path":"/api/v1/shipments/SHP-20260221-009","status":200,"latency_ms":8,"request_id":"req-041-qrs"}
 {"timestamp":"2026-02-21T10:05:00.345Z","level":"info","service":"api-server","message":"Graceful shutdown signal received","signal":"SIGTERM"}
 {"timestamp":"2026-02-21T10:05:00.678Z","level":"info","service":"api-server","message":"Draining active connections","active_requests":2}

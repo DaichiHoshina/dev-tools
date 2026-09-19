@@ -39,7 +39,7 @@ interface GitLabJobResponse {
   web_url: string;
 }
 
-// ─── パイプライントリガー（release-tesと同じ方式: PRIVATE-TOKEN + JSON） ──
+// ─── パイプライントリガー（PRIVATE-TOKEN + JSON） ──
 
 export async function triggerPipeline(
   serviceName: string,

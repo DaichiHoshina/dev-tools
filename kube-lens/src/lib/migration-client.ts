@@ -203,7 +203,7 @@ export async function fetchMigrationVersion(
   }
 }
 
-// db-viewer backend と同じコマンド形式:
+// 実行するコマンド形式:
 // kubectl exec -n {ns} {pod} -c {container} -- {container} migrate {subcommand}
 export async function executeMigration(
   baseUrl: string,
