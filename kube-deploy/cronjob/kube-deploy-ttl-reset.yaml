@@ -1,0 +1,137 @@
+---
+# ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-deploy-ttl-reset
+  namespace: default
+---
+# ClusterRole — ConfigMap読み書き + Deployment イメージ更新
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kube-deploy-ttl-reset
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "patch"]
+---
+# ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kube-deploy-ttl-reset
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kube-deploy-ttl-reset
+subjects:
+  - kind: ServiceAccount
+    name: kube-deploy-ttl-reset
+    namespace: default
+---
+# CronJob — 毎時実行でTTL切れオーバーライドをリセット
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kube-deploy-ttl-reset
+  namespace: default
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 300
+      template:
+        spec:
+          serviceAccountName: kube-deploy-ttl-reset
+          restartPolicy: Never
+          containers:
+            - name: ttl-reset
+              image: bitnami/kubectl:latest
+              env:
+                # ECR_REGISTRY を実際の値に変更してください
+                - name: ECR_REGISTRY
+                  value: "123456789012.dkr.ecr.ap-northeast-1.amazonaws.com"
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+
+                  CONFIGMAP_NAME="kube-deploy-image-overrides"
+                  CONFIGMAP_NS="default"
+
+                  echo "[INFO] TTLリセットジョブ開始"
+
+                  # ConfigMap読み込み
+                  OVERRIDES="$(kubectl get configmap "$CONFIGMAP_NAME" -n "$CONFIGMAP_NS" \
+                    -o jsonpath='{.data.overrides}' 2>/dev/null || echo '{}')"
+
+                  if [ -z "$OVERRIDES" ] || [ "$OVERRIDES" = "{}" ]; then
+                    echo "[INFO] オーバーライドなし。終了"
+                    exit 0
+                  fi
+
+                  NOW_EPOCH="$(date -u +%s)"
+                  UPDATED="$OVERRIDES"
+                  RESET_COUNT=0
+
+                  # 各エントリの TTL をチェック
+                  for SVC in $(echo "$OVERRIDES" | jq -r '.overrides | keys[]'); do
+                    DEPLOYED_AT="$(echo "$OVERRIDES" | jq -r ".overrides[\"$SVC\"].deployed_at")"
+                    TTL_HOURS="$(echo "$OVERRIDES" | jq -r ".overrides[\"$SVC\"].ttl_hours")"
+                    ORIGINAL_TAG="$(echo "$OVERRIDES" | jq -r ".overrides[\"$SVC\"].original_tag")"
+                    NAMESPACE="$(echo "$OVERRIDES" | jq -r ".overrides[\"$SVC\"].namespace")"
+                    ECR_REPO="$(echo "$OVERRIDES" | jq -r ".overrides[\"$SVC\"].ecr_repo")"
+
+                    # deployed_at をエポック秒に変換
+                    DEPLOYED_EPOCH="$(date -u -d "$DEPLOYED_AT" +%s 2>/dev/null || echo 0)"
+                    if [ "$DEPLOYED_EPOCH" -eq 0 ]; then
+                      echo "[WARN] ${SVC}: deployed_at パース失敗。スキップ"
+                      continue
+                    fi
+
+                    ELAPSED_HOURS=$(( (NOW_EPOCH - DEPLOYED_EPOCH) / 3600 ))
+
+                    if [ "$ELAPSED_HOURS" -ge "$TTL_HOURS" ]; then
+                      echo "[INFO] ${SVC}: TTL超過 (${ELAPSED_HOURS}h >= ${TTL_HOURS}h)。リセット中..."
+
+                      if [ "$ORIGINAL_TAG" != "null" ] && [ -n "$ORIGINAL_TAG" ]; then
+                        FULL_IMAGE="${ECR_REGISTRY}/${ECR_REPO}:${ORIGINAL_TAG}"
+                        if kubectl set image "deployment/${SVC}" "${SVC}=${FULL_IMAGE}" -n "$NAMESPACE"; then
+                          echo "[OK] ${SVC}: イメージをリセットしました"
+                        else
+                          echo "[ERROR] ${SVC}: リセットに失敗"
+                          continue
+                        fi
+                      else
+                        echo "[WARN] ${SVC}: original_tag が不明。ConfigMapエントリのみ削除"
+                      fi
+
+                      UPDATED="$(echo "$UPDATED" | jq "del(.overrides[\"$SVC\"])")"
+                      RESET_COUNT=$((RESET_COUNT + 1))
+                    else
+                      REMAINING=$((TTL_HOURS - ELAPSED_HOURS))
+                      echo "[INFO] ${SVC}: TTL残 ${REMAINING}h"
+                    fi
+                  done
+
+                  # ConfigMap更新
+                  if [ "$RESET_COUNT" -gt 0 ]; then
+                    ESCAPED="$(echo "$UPDATED" | jq -c . | jq -Rs .)"
+                    kubectl patch configmap "$CONFIGMAP_NAME" -n "$CONFIGMAP_NS" \
+                      --type merge \
+                      -p "{\"data\":{\"overrides\":${ESCAPED}}}"
+                    echo "[OK] ConfigMap更新完了 (${RESET_COUNT}件リセット)"
+                  else
+                    echo "[INFO] リセット対象なし"
+                  fi
+
+                  echo "[INFO] TTLリセットジョブ完了"

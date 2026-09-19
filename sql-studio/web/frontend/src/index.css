@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   Theme: Corporate / Linear (Light only)
+   Slate palette + Indigo accent
+   ============================================ */
+:root {
+  --env-color-a: #4f46e5;
+  --env-color-b: #7c3aed;
+
+  /* Slate palette + Indigo accent (Linear-inspired) */
+  --c-crust:    226 232 240;   /* slate-200: #e2e8f0 — header/footer */
+  --c-mantle:   241 245 249;   /* slate-100: #f1f5f9 — sidebar */
+  --c-base:     255 255 255;   /* white — content */
+  --c-surface0: 205 213 224;   /* slate-275: #cdd5e0 — border */
+  --c-surface1: 172 184 200;   /* slate-375: #acb8c8 — strong border */
+  --c-surface2: 107 120 140;   /* slate-475: #6b788c — muted icon */
+  --c-overlay0:  60  72  92;   /* slate-650: #3c485c — icon/tertiary */
+  --c-text:     15  23  42;    /* slate-900: #0f172a */
+  --c-subtext:  30  41  59;    /* slate-800: #1e293b */
+  --c-blue:     79  70 229;    /* indigo-600: #4f46e5 */
+  --c-green:    22 163  74;    /* green-600:  #16a34a */
+  --c-red:     220  38  38;    /* red-600:    #dc2626 */
+  --c-yellow:  217 119   6;    /* amber-600:  #d97706 */
+  --c-peach:   234  88  12;    /* orange-600: #ea580c */
+  --c-teal:     13 148 136;    /* teal-600:   #0d9488 */
+  --c-mauve:   124  58 237;    /* violet-600: #7c3aed */
+  --c-lavender:  2 132 199;    /* sky-600:    #0284c7 */
+
+  /* UI tokens (aligned to palette) */
+  --scrollbar-thumb: #cdd5e0;
+  --scrollbar-hover: #acb8c8;
+  --editor-gutter-border: #cdd5e0;
+  --editor-active-bg: rgba(79, 70, 229, 0.06);
+  --editor-active-gutter: rgba(79, 70, 229, 0.08);
+  --resize-handle-bg: #cdd5e0;
+  --resize-handle-hover: #4f46e5;
+  --kbd-bg: #e2e8f0;
+  --kbd-border: #cdd5e0;
+  --kbd-color: #3c485c;
+  --dot-color: rgba(0, 0, 0, 0.06);
+  --glow-primary: rgba(79, 70, 229, 0.15);
+  --glow-success: rgba(22, 163, 74, 0.15);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(0, 0, 0, 0.10);
+
+  --chart-grid: #cdd5e0;
+  --chart-axis: #acb8c8;
+  --chart-tick: #6b788c;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #cdd5e0;
+  --chart-tooltip-color: #0f172a;
+
+  color-scheme: light;
+}
+
+/* ============================================
+   Base styles
+   ============================================ */
+body {
+  margin: 0;
+  font-family: 'Inter', 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
+
+/* CodeMirror */
+.cm-editor { height: 100%; font-size: 13px; background: transparent !important; }
+.cm-editor .cm-scroller { font-family: 'JetBrains Mono', monospace; line-height: 1.6; }
+.cm-editor.cm-focused { outline: none; }
+.cm-editor .cm-gutters { background: transparent !important; border-right: 1px solid var(--editor-gutter-border) !important; }
+.cm-editor .cm-activeLineGutter { background: var(--editor-active-gutter) !important; }
+.cm-editor .cm-activeLine { background: var(--editor-active-bg) !important; }
+
+/* Resize handle */
+.resize-handle { cursor: row-resize; position: relative; transition: all 0.15s ease; }
+.resize-handle::after {
+  content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 32px; height: 3px; border-radius: 2px; background: var(--resize-handle-bg); transition: all 0.15s ease;
+}
+.resize-handle:hover::after {
+  background: var(--resize-handle-hover); width: 48px;
+  box-shadow: 0 0 12px var(--glow-primary);
+}
+
+/* Kbd */
+kbd {
+  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
+  padding: 2px 6px; border-radius: 5px;
+  background: var(--kbd-bg); border: 1px solid var(--kbd-border); color: var(--kbd-color);
+  line-height: 1; white-space: nowrap;
+}
+
+/* ============================================
+   Glass (simplified)
+   ============================================ */
+.glass {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
+.animate-slide-in { animation: slideInLeft 0.15s ease-out; }
+.animate-pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+.animate-spin-slow { animation: spin 1s linear infinite; }
+
+/* Focus ring */
+.focus-ring:focus { outline: none; box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3); }
+
+/* ============================================
+   Backgrounds
+   ============================================ */
+.dot-grid {
+  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

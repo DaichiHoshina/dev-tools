@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="fav-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="16" cy="10" rx="10" ry="3" fill="url(#fav-grad)" opacity="0.3"/>
+  <rect x="6" y="10" width="20" height="12" fill="url(#fav-grad)" opacity="0.3"/>
+  <ellipse cx="16" cy="22" rx="10" ry="3" fill="url(#fav-grad)"/>
+  <ellipse cx="16" cy="14" rx="10" ry="3" fill="none" stroke="url(#fav-grad)" stroke-width="1"/>
+  <ellipse cx="16" cy="18" rx="10" ry="3" fill="none" stroke="url(#fav-grad)" stroke-width="1"/>
+  <ellipse cx="16" cy="10" rx="10" ry="3" fill="url(#fav-grad)"/>
+</svg>

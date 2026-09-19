@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="releasemanager">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Release Manager - リリースフロー管理" />
+    <title>Flow - Release Manager</title>
+
+    <!-- Favicon (Data URI) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjM2NmYxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOGI1Y2Y2Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0idXJsKCNnKSIvPjxwYXRoIGQ9Ik0xNiA3bDcgN2wtMiAyLTUtNS01IDUtMiAtMnoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNOSAxNmw3IDcgNy03LTItMi01IDUtNS01eiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjciLz48L3N2Zz4K" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- FOUC防止: テーマ読み込み -->
+    <script>
+      (function() {
+        const THEME_KEY = 'release-manager-theme';
+        const LIGHT_THEME = 'releasemanager';
+        const DARK_THEME = 'releasemanager-dark';
+
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        if (savedTheme) {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } else {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = prefersDark ? DARK_THEME : LIGHT_THEME;
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        if (localStorage.getItem('release-manager-sidebar') === 'collapsed') {
+          document.documentElement.classList.add('sidebar-collapsed');
+        }
+      })();
+    </script>
+    <div class="min-h-screen flex app-shell">
+      <!-- Sidebar -->
+      <aside class="app-sidebar" id="app-sidebar">
+        <div class="sidebar-header">
+          <a href="./" class="brand">
+            <span class="brand-icon">
+              <i class="fas fa-rocket"></i>
+            </span>
+            <span class="brand-mark text-sm sidebar-label">Release</span>
+            <span class="brand-suffix sidebar-label">Manager</span>
+          </a>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="./" class="sidebar-link active">
+            <i class="fa-solid fa-list-check"></i>
+            <span class="sidebar-label">Flow</span>
+          </a>
+          <a href="./branch.html" class="sidebar-link">
+            <i class="fa-solid fa-code-branch"></i>
+            <span class="sidebar-label">Branch</span>
+          </a>
+          <a href="./tes.html" class="sidebar-link">
+            <i class="fa-solid fa-rocket"></i>
+            <span class="sidebar-label">Deploy</span>
+          </a>
+          <a href="./prd.html" class="sidebar-link">
+            <i class="fa-solid fa-arrow-up"></i>
+            <span class="sidebar-label">Promote</span>
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div id="theme-toggle-container"></div>
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="サイドバー切替">
+            <i class="fas fa-angles-left" id="sidebar-toggle-icon"></i>
+            <span class="sidebar-label">たたむ</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="flex-1 min-w-0 px-6 py-8 md:px-12 md:py-10 max-w-3xl w-full mx-auto app-main animate-fade-in">
+        <!-- リリースフロー タイムライン -->
+        <div class="card-modern">
+          <div class="px-5 py-4">
+            <h3 class="text-[11px] font-semibold text-base-content/50 uppercase tracking-wider mb-4">
+              Release Flow
+            </h3>
+            <div id="flow-timeline" class="space-y-0">
+              <!-- home-client.tsx で動的生成 -->
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Sidebar toggle -->
+    <script>
+      (function() {
+        var btn = document.getElementById('sidebar-toggle');
+        var icon = document.getElementById('sidebar-toggle-icon');
+        if (document.documentElement.classList.contains('sidebar-collapsed')) {
+          icon.className = 'fas fa-angles-right';
+        }
+        btn.addEventListener('click', function() {
+          document.documentElement.classList.toggle('sidebar-collapsed');
+          var collapsed = document.documentElement.classList.contains('sidebar-collapsed');
+          icon.className = collapsed ? 'fas fa-angles-right' : 'fas fa-angles-left';
+          localStorage.setItem('release-manager-sidebar', collapsed ? 'collapsed' : 'expanded');
+        });
+      })();
+    </script>
+
+    <!-- Vite でビルドされたJSを読み込み -->
+    <script type="module" src="/src/home-client.tsx"></script>
+  </body>
+</html>

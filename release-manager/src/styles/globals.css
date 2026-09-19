@@ -1,0 +1,1178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===============================================
+   Base Styles — Futuristic SaaS Dashboard
+   =============================================== */
+@layer base {
+  :root {
+    --gradient-brand: linear-gradient(135deg, #6366f1 0%, #818cf8 40%, #22d3ee 100%);
+    --glow-primary: rgba(99, 102, 241, 0.4);
+    --glow-accent: rgba(34, 211, 238, 0.3);
+    --glow-success: rgba(52, 211, 153, 0.3);
+  }
+
+  [data-theme="releasetes"] {
+    color-scheme: light;
+    --gradient-surface: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-border: rgba(226, 232, 240, 0.6);
+    --surface-glow: transparent;
+  }
+
+  [data-theme="releasetes-dark"] {
+    color-scheme: dark;
+    --gradient-surface: radial-gradient(ellipse at 50% 0%, #141428 0%, #0c0c14 70%);
+    --glass-bg: rgba(16, 16, 28, 0.8);
+    --card-bg: rgba(16, 16, 28, 0.6);
+    --card-border: rgba(129, 140, 248, 0.1);
+    --surface-glow: radial-gradient(ellipse 600px 300px at 50% -50px, rgba(99, 102, 241, 0.06) 0%, transparent 100%);
+  }
+
+  body {
+    @apply text-base-content m-0 p-0 antialiased;
+    font-family: "Inter", "Zen Kaku Gothic New", "Hiragino Sans", "Meiryo", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    background: var(--gradient-surface);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Dark mode subtle grid pattern */
+  [data-theme="releasetes-dark"] body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(129, 140, 248, 0.03) 1px, transparent 0);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Ambient glow behind content */
+  [data-theme="releasetes-dark"] body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: var(--surface-glow);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  a {
+    @apply text-primary no-underline;
+    transition: color 0.15s ease, opacity 0.15s ease;
+  }
+
+  a:hover {
+    @apply text-accent;
+  }
+
+  * {
+    @apply box-border;
+  }
+
+  h1, h2, h3, .heading {
+    font-family: "Space Grotesk", "Inter", sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  /* DaisyUI overrides */
+  .table th {
+    @apply font-medium text-[11px] uppercase tracking-[0.08em] text-secondary/80;
+    background: transparent;
+  }
+
+  .table tbody tr {
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .table tbody tr:hover {
+    @apply bg-primary/[0.03];
+  }
+
+  [data-theme="releasetes-dark"] .table tbody tr:hover {
+    @apply bg-primary/[0.06];
+  }
+
+  .table tbody tr {
+    @apply border-b border-base-300/50;
+  }
+
+  .table th,
+  .table td {
+    @apply py-4 px-6 align-middle;
+  }
+
+  .btn {
+    @apply font-medium text-[13px] tracking-wide;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tab {
+    @apply text-xs font-medium;
+  }
+}
+
+@layer components {
+  /* ===============================================
+     App Shell
+     =============================================== */
+  .app-shell {
+    @apply relative;
+    isolation: isolate;
+  }
+
+  .app-main {
+    @apply relative z-10;
+  }
+
+  /* ===============================================
+     Sidebar Navigation
+     =============================================== */
+  .app-sidebar {
+    @apply flex flex-col flex-shrink-0 sticky top-0 h-screen z-50;
+    width: 200px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-right: 1px solid var(--card-border);
+    transition: width 0.2s ease;
+    overflow: hidden;
+  }
+
+  [data-theme="releasetes-dark"] .app-sidebar {
+    border-right: 1px solid rgba(129, 140, 248, 0.06);
+    box-shadow: 1px 0 24px rgba(0, 0, 0, 0.3);
+  }
+
+  html.sidebar-collapsed .app-sidebar {
+    width: 56px;
+  }
+
+  .sidebar-header {
+    @apply flex items-center gap-2 px-3;
+    height: 56px;
+    min-height: 56px;
+  }
+
+  html.sidebar-collapsed .sidebar-header {
+    @apply justify-center px-0;
+  }
+
+  html.sidebar-collapsed .sidebar-header .brand {
+    @apply justify-center;
+  }
+
+  html.sidebar-collapsed .brand-mark,
+  html.sidebar-collapsed .brand-suffix {
+    @apply hidden;
+  }
+
+  .sidebar-nav {
+    @apply flex-1 flex flex-col gap-0.5 px-2 py-2;
+  }
+
+  html.sidebar-collapsed .sidebar-nav {
+    @apply px-1;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap no-underline;
+    color: inherit;
+    opacity: 0.6;
+    transition: all 0.15s;
+  }
+
+  .sidebar-link:hover {
+    opacity: 1;
+    @apply bg-primary/[0.06];
+    color: inherit;
+  }
+
+  .sidebar-link.active {
+    opacity: 1;
+    @apply bg-primary/10 text-primary;
+  }
+
+  [data-theme="releasetes-dark"] .sidebar-link.active {
+    box-shadow: inset 3px 0 0 rgba(129, 140, 248, 0.5);
+  }
+
+  .sidebar-link i {
+    @apply w-5 text-center text-sm flex-shrink-0;
+  }
+
+  html.sidebar-collapsed .sidebar-label {
+    @apply hidden;
+  }
+
+  html.sidebar-collapsed .sidebar-link {
+    @apply justify-center px-0 py-2.5;
+  }
+
+  .sidebar-footer {
+    @apply flex flex-col gap-0.5 px-2 py-2;
+    border-top: 1px solid var(--card-border);
+  }
+
+  html.sidebar-collapsed .sidebar-footer {
+    @apply px-1;
+  }
+
+  .sidebar-toggle {
+    @apply flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap;
+    @apply w-full border-0 cursor-pointer;
+    background: transparent;
+    color: inherit;
+    opacity: 0.4;
+    transition: all 0.15s;
+  }
+
+  .sidebar-toggle:hover {
+    opacity: 1;
+    @apply bg-base-200/70;
+  }
+
+  html.sidebar-collapsed .sidebar-toggle {
+    @apply justify-center px-0 py-2.5;
+  }
+
+  /* ===============================================
+     Header / Navbar — Glassmorphism + Neon Accent
+     =============================================== */
+  .app-header {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid var(--card-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+
+  [data-theme="releasetes-dark"] .app-header {
+    border-bottom: 1px solid rgba(129, 140, 248, 0.06);
+    box-shadow:
+      0 1px 0 rgba(129, 140, 248, 0.05),
+      0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .brand {
+    @apply flex items-center gap-2.5;
+  }
+
+  .brand-icon {
+    @apply w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm;
+    background: var(--gradient-brand);
+    box-shadow: 0 2px 8px var(--glow-primary);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .brand-icon:hover {
+    box-shadow: 0 4px 16px var(--glow-primary), 0 0 24px var(--glow-accent);
+    transform: scale(1.05);
+  }
+
+  .brand-mark {
+    @apply text-neutral font-bold;
+    font-family: "Space Grotesk", sans-serif;
+    letter-spacing: -0.03em;
+  }
+
+  .brand-suffix {
+    @apply text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-widest;
+    background: var(--gradient-brand);
+    color: white;
+    box-shadow: 0 1px 6px var(--glow-primary);
+  }
+
+  /* ===============================================
+     Card Styles — Glass + Animated Border
+     =============================================== */
+  .card-modern {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 16px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  [data-theme="releasetes-dark"] .card-modern {
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 rgba(129, 140, 248, 0.04), 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-modern:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 16px 32px rgba(0, 0, 0, 0.06);
+  }
+
+  [data-theme="releasetes-dark"] .card-modern:hover {
+    border-color: rgba(129, 140, 248, 0.15);
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.08),
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 48px rgba(99, 102, 241, 0.04);
+  }
+
+  .card-body {
+    @apply p-6 gap-5;
+  }
+
+  .table-wrap {
+    @apply px-0 pb-0;
+  }
+
+  .table-wrap .table {
+    @apply w-full;
+  }
+
+  /* ===============================================
+     Tabs — Pill Style
+     =============================================== */
+  .tabs {
+    @apply bg-transparent border-b border-base-300/50 gap-1 px-6 pt-2 pb-0;
+  }
+
+  .tabs-inline {
+    @apply flex gap-1 border-0 p-0;
+  }
+
+  .tab {
+    @apply text-secondary/70 rounded-t-lg border-b-2 border-transparent px-4 h-10;
+    transition: all 0.2s ease;
+  }
+
+  .tabs-inline .tab {
+    @apply rounded-lg border-0 h-8 px-3;
+  }
+
+  .tab:hover {
+    @apply text-neutral bg-base-200/50;
+  }
+
+  .tab-active,
+  .tab.active {
+    @apply text-primary border-b-2 border-primary bg-transparent font-semibold;
+  }
+
+  .tabs-inline .tab-active,
+  .tabs-inline .tab.active {
+    @apply bg-primary/10 text-primary border-0;
+  }
+
+  .tab i {
+    @apply leading-none;
+  }
+
+  /* ===============================================
+     Buttons — Larger + Neon Glow
+     =============================================== */
+  .btn i {
+    @apply leading-none;
+  }
+
+  /* Consistent button sizing: slightly larger than default sm */
+  .btn-sm {
+    @apply h-9 min-h-[36px] px-4 text-[13px];
+  }
+
+  .btn-ghost {
+    @apply hover:bg-base-200/70;
+  }
+
+  /* Primary button: glow effect in dark mode */
+  .btn-primary {
+    position: relative;
+  }
+
+  [data-theme="releasetes-dark"] .btn-primary {
+    box-shadow: 0 0 12px var(--glow-primary), 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  [data-theme="releasetes-dark"] .btn-primary:hover {
+    box-shadow: 0 0 20px var(--glow-primary), 0 0 40px rgba(99, 102, 241, 0.15);
+    transform: translateY(-1px);
+  }
+
+  [data-theme="releasetes-dark"] .btn-primary:active {
+    box-shadow: 0 0 8px var(--glow-primary);
+    transform: scale(0.98);
+  }
+
+  /* Error button glow */
+  [data-theme="releasetes-dark"] .btn-error {
+    box-shadow: 0 0 8px rgba(251, 113, 133, 0.3);
+  }
+
+  [data-theme="releasetes-dark"] .btn-error:hover {
+    box-shadow: 0 0 16px rgba(251, 113, 133, 0.4);
+  }
+
+  /* Outline button subtle border glow */
+  [data-theme="releasetes-dark"] .btn-outline:hover {
+    box-shadow: 0 0 12px rgba(129, 140, 248, 0.15);
+  }
+
+  .btn-gradient {
+    @apply text-white font-semibold border-0;
+    background: var(--gradient-brand);
+    box-shadow: 0 4px 14px var(--glow-primary);
+  }
+
+  .btn-gradient:hover {
+    box-shadow: 0 6px 20px var(--glow-primary), 0 0 32px var(--glow-accent);
+    transform: translateY(-1px);
+  }
+
+  .btn-gradient:active {
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+    transform: scale(0.98);
+  }
+
+  /* ===============================================
+     Badge Pills
+     =============================================== */
+  .badge-pill {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium;
+    border-radius: 999px;
+  }
+
+  .badge-pill-primary {
+    @apply bg-primary/10 text-primary;
+  }
+
+  .badge-pill-warning {
+    @apply bg-warning/15 text-warning;
+  }
+
+  .badge-pill-success {
+    @apply bg-success/15 text-success;
+  }
+
+  .badge-pill-muted {
+    @apply bg-base-300/60 text-secondary;
+  }
+
+  /* ===============================================
+     Deploy Progress Steps — Timeline + Neon States
+     =============================================== */
+  .m3-step-list {
+    @apply flex flex-col gap-2.5;
+  }
+
+  .m3-step {
+    @apply flex items-center gap-5 px-5 py-4 rounded-xl
+           border border-transparent transition-all duration-300;
+  }
+
+  .m3-step-icon {
+    @apply w-9 h-9 rounded-lg flex items-center justify-center
+           bg-base-200 text-secondary/60 text-sm flex-shrink-0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .m3-step-content {
+    @apply flex-1 min-w-0;
+  }
+
+  .m3-step-name {
+    @apply font-medium text-sm text-base-content;
+  }
+
+  .m3-step-progress {
+    @apply h-1 bg-base-200 rounded-full overflow-hidden mt-2;
+  }
+
+  .m3-step-progress-bar {
+    @apply h-full bg-primary rounded-full transition-all duration-500 ease-out;
+  }
+
+  .m3-step-status {
+    @apply text-sm flex-shrink-0;
+  }
+
+  /* Step States */
+  .m3-step-pending {
+    @apply opacity-50;
+  }
+
+  .m3-step-running {
+    @apply bg-primary/[0.06] border-primary/20;
+  }
+
+  [data-theme="releasetes-dark"] .m3-step-running {
+    @apply bg-primary/[0.08] border-primary/25;
+    box-shadow: inset 0 0 24px rgba(129, 140, 248, 0.03);
+  }
+
+  .m3-step-running .m3-step-icon {
+    @apply bg-primary text-white;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+  }
+
+  [data-theme="releasetes-dark"] .m3-step-running .m3-step-icon {
+    box-shadow:
+      0 0 0 4px rgba(129, 140, 248, 0.2),
+      0 0 16px rgba(129, 140, 248, 0.3);
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  .m3-step-running .m3-step-progress-bar {
+    background: linear-gradient(90deg, #6366f1 0%, #818cf8 30%, #22d3ee 50%, #818cf8 70%, #6366f1 100%);
+    background-size: 200% 100%;
+    animation: progress 2s linear infinite;
+  }
+
+  .m3-step-success {
+    @apply bg-success/[0.06] border-success/20;
+  }
+
+  [data-theme="releasetes-dark"] .m3-step-success {
+    @apply bg-success/[0.08] border-success/25;
+  }
+
+  .m3-step-success .m3-step-icon {
+    @apply bg-success text-white;
+    animation: checkmark-pop 0.4s ease-out;
+  }
+
+  [data-theme="releasetes-dark"] .m3-step-success .m3-step-icon {
+    box-shadow: 0 0 12px var(--glow-success);
+  }
+
+  .m3-step-success .m3-step-progress-bar {
+    @apply w-full bg-success;
+  }
+
+  @keyframes checkmark-pop {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .m3-step-failed {
+    @apply bg-error/[0.06] border-error/20;
+  }
+
+  [data-theme="releasetes-dark"] .m3-step-failed {
+    @apply bg-error/[0.08] border-error/25;
+  }
+
+  .m3-step-failed .m3-step-icon {
+    @apply bg-error text-white;
+  }
+
+  [data-theme="releasetes-dark"] .m3-step-failed .m3-step-icon {
+    box-shadow: 0 0 12px rgba(251, 113, 133, 0.4);
+  }
+
+  .m3-step-waiting {
+    @apply bg-warning/[0.06] border-warning/20;
+  }
+
+  .m3-step-waiting .m3-step-icon {
+    @apply bg-warning text-white;
+  }
+
+  .m3-step-waiting .m3-step-progress-bar {
+    @apply bg-warning;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.2) 10px,
+      rgba(255, 255, 255, 0.2) 20px
+    );
+    background-size: 200% 100%;
+    animation: waiting-stripe 2s linear infinite;
+  }
+
+  @keyframes waiting-stripe {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+
+  /* ===============================================
+     Log Viewer — Futuristic Terminal
+     =============================================== */
+  .m3-log-accordion {
+    @apply border border-base-300/60 rounded-xl overflow-hidden mt-3;
+  }
+
+  [data-theme="releasetes-dark"] .m3-log-accordion {
+    border-color: rgba(129, 140, 248, 0.08);
+  }
+
+  .m3-log-header {
+    @apply px-4 py-3 bg-base-200/60 cursor-pointer
+           flex items-center gap-2 text-sm font-medium text-base-content/80
+           select-none list-none;
+    transition: background 0.2s ease;
+  }
+
+  [data-theme="releasetes-dark"] .m3-log-header {
+    background: rgba(16, 16, 28, 0.6);
+  }
+
+  .m3-log-header:hover {
+    @apply bg-base-200;
+  }
+
+  [data-theme="releasetes-dark"] .m3-log-header:hover {
+    background: rgba(26, 26, 46, 0.8);
+  }
+
+  .m3-log-header::-webkit-details-marker {
+    @apply hidden;
+  }
+
+  .m3-log-header::before {
+    content: "\f078";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    @apply text-[10px] transition-transform duration-200 text-base-content/40;
+  }
+
+  details[open] .m3-log-header::before {
+    @apply rotate-0;
+  }
+
+  details:not([open]) .m3-log-header::before {
+    @apply -rotate-90;
+  }
+
+  .m3-log-container {
+    @apply max-h-[400px] overflow-y-auto;
+    background: #080812;
+    position: relative;
+  }
+
+  /* Subtle scan line effect for dark terminal */
+  [data-theme="releasetes-dark"] .m3-log-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(129, 140, 248, 0.01) 2px,
+      rgba(129, 140, 248, 0.01) 4px
+    );
+    pointer-events: none;
+  }
+
+  .m3-log-output {
+    @apply text-xs leading-relaxed m-0 p-4
+           whitespace-pre-wrap break-words min-h-[200px];
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  .log-line {
+    @apply my-0.5 px-2 py-0.5 rounded;
+  }
+
+  .log-info {
+    color: #67e8f9;
+  }
+
+  .log-success {
+    color: #34d399;
+    text-shadow: 0 0 8px rgba(52, 211, 153, 0.2);
+  }
+
+  .log-warning {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.06);
+  }
+
+  .log-error {
+    color: #fb7185;
+    background: rgba(251, 113, 133, 0.06);
+    text-shadow: 0 0 6px rgba(251, 113, 133, 0.15);
+  }
+
+  .log-link {
+    color: #a78bfa;
+    @apply underline;
+  }
+
+  .log-link:hover {
+    color: #c4b5fd;
+    text-shadow: 0 0 8px rgba(167, 139, 250, 0.3);
+  }
+
+  /* Log scrollbar */
+  .m3-log-container::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+
+  .m3-log-container::-webkit-scrollbar-track {
+    background: #0c0c18;
+  }
+
+  .m3-log-container::-webkit-scrollbar-thumb {
+    @apply rounded-full;
+    background: #2a2a4a;
+  }
+
+  .m3-log-container::-webkit-scrollbar-thumb:hover {
+    background: #3a3a5a;
+  }
+
+  /* ===============================================
+     Status Indicators — Glow Ring
+     =============================================== */
+  .status-indicator {
+    @apply w-8 h-8 rounded-lg flex items-center justify-center text-xs;
+    transition: all 0.2s ease;
+  }
+
+  .status-idle {
+    @apply bg-base-200 text-secondary/60;
+  }
+
+  .status-running {
+    @apply bg-primary/10 text-primary;
+  }
+
+  [data-theme="releasetes-dark"] .status-running {
+    box-shadow: 0 0 8px rgba(129, 140, 248, 0.25);
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  .status-success {
+    @apply bg-success/10 text-success;
+  }
+
+  [data-theme="releasetes-dark"] .status-success {
+    box-shadow: 0 0 8px var(--glow-success);
+  }
+
+  .status-failed {
+    @apply bg-error/10 text-error;
+  }
+
+  [data-theme="releasetes-dark"] .status-failed {
+    box-shadow: 0 0 8px rgba(251, 113, 133, 0.25);
+  }
+
+  .status-warning {
+    @apply bg-warning/10 text-warning;
+  }
+
+  /* ===============================================
+     Version Input
+     =============================================== */
+  .version-input-group {
+    @apply flex items-center gap-1.5;
+  }
+
+  .version-input-group .input {
+    height: 30px;
+    @apply rounded-lg text-center text-sm;
+  }
+
+  .version-input-group .input:focus {
+    @apply border-primary/40;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  [data-theme="releasetes-dark"] .version-input-group .input:focus {
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15), 0 0 12px rgba(129, 140, 248, 0.1);
+  }
+
+  .version-input-group .badge {
+    height: 24px;
+  }
+
+  .version-input-group .separator {
+    @apply text-secondary/50 text-xs;
+  }
+
+  /* ===============================================
+     Deploy Info & Mini Progress
+     =============================================== */
+  .deploy-info {
+    @apply mt-1 text-xs text-base-content/50;
+  }
+
+  .service-mini-progress {
+    @apply h-1 bg-base-200 rounded-full overflow-hidden mt-1;
+  }
+
+  .service-mini-progress .mini-bar {
+    @apply h-full bg-primary rounded-full transition-all duration-300;
+  }
+
+  [data-theme="releasetes-dark"] .service-mini-progress .mini-bar {
+    box-shadow: 0 0 6px var(--glow-primary);
+  }
+
+  .service-mini-progress .mini-bar-waiting {
+    animation: pulse-bar 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-bar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .progress-bar-waiting {
+    animation: pulse-bar 1.5s ease-in-out infinite;
+  }
+
+  /* ===============================================
+     Clickable Table Cells
+     =============================================== */
+  .clickable-cell {
+    @apply cursor-default;
+  }
+
+  tr:has(.status-running) .clickable-cell {
+    @apply cursor-pointer;
+  }
+
+  tr:has(.status-running) .clickable-cell:hover {
+    @apply bg-primary/[0.04];
+  }
+
+  tr.row-selected {
+    @apply bg-primary/[0.06];
+  }
+
+  [data-theme="releasetes-dark"] tr.row-selected {
+    @apply bg-primary/[0.08];
+    box-shadow: inset 3px 0 0 rgba(129, 140, 248, 0.5);
+  }
+
+  /* ===============================================
+     Branch Status Badge
+     =============================================== */
+  .branch-status-badge {
+    @apply flex items-center;
+  }
+
+  .branch-status-badge .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .branch-status-badge .badge-warning {
+    @apply bg-warning/10 text-warning;
+  }
+
+  .branch-status-badge .badge-success {
+    @apply bg-success/10 text-success;
+  }
+
+  /* ===============================================
+     Branch Ahead Indicator
+     =============================================== */
+  .service-name-row {
+    @apply flex items-center gap-2;
+  }
+
+  .branch-ahead-indicator {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full
+           bg-warning/10 text-warning text-[11px] font-medium;
+  }
+
+  .branch-ahead-indicator i {
+    @apply text-[10px];
+  }
+
+  .branch-ahead-row {
+    @apply bg-warning/[0.04];
+  }
+
+  .branch-ahead-row:hover {
+    @apply bg-warning/[0.07];
+  }
+
+  /* ===============================================
+     Deploy Details Grid
+     =============================================== */
+  .deploy-details-grid {
+    @apply grid gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  }
+
+  .deploy-detail-card {
+    @apply flex flex-col border rounded-2xl overflow-hidden;
+    background: var(--card-bg);
+    border-color: var(--card-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 16px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  [data-theme="releasetes-dark"] .deploy-detail-card {
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 rgba(129, 140, 248, 0.04), 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  [data-theme="releasetes-dark"] .deploy-detail-card:hover {
+    border-color: rgba(129, 140, 248, 0.12);
+  }
+
+  .deploy-detail-card .card-body {
+    @apply flex-1 flex flex-col p-6;
+  }
+
+  .deploy-detail-card .m3-log-accordion {
+    @apply mt-auto;
+  }
+
+  .deploy-detail-card .m3-log-container {
+    @apply max-h-[300px];
+  }
+
+  /* ===============================================
+     Deploy Overall Progress
+     =============================================== */
+  .deploy-overall-progress {
+    @apply mb-3 px-0 pt-0;
+  }
+
+  .overall-progress-label {
+    @apply flex justify-between items-center mb-2 text-sm;
+  }
+
+  .overall-progress-text {
+    @apply font-mono text-xs text-secondary;
+  }
+
+  .overall-progress-bar-container {
+    @apply w-full h-1.5 bg-base-200 rounded-full overflow-hidden;
+  }
+
+  .overall-progress-bar {
+    @apply h-full rounded-full transition-all duration-500 ease-out;
+    background: linear-gradient(90deg, #6366f1, #818cf8, #22d3ee);
+  }
+
+  [data-theme="releasetes-dark"] .overall-progress-bar {
+    box-shadow: 0 0 12px var(--glow-primary);
+  }
+
+  /* ===============================================
+     Deploy Status Badge
+     =============================================== */
+  .deploy-status-badge .badge {
+    @apply text-xs;
+  }
+
+  /* ===============================================
+     Reload Recovery Bar
+     =============================================== */
+  .reload-recovery-bar {
+    @apply bg-warning/[0.06] border border-warning/20 rounded-xl p-4 mb-4;
+  }
+
+  [data-theme="releasetes-dark"] .reload-recovery-bar {
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 16px rgba(251, 191, 36, 0.05);
+  }
+
+  .reload-recovery-content {
+    @apply flex items-center gap-3 flex-wrap;
+  }
+
+  .reload-recovery-content > i {
+    @apply text-warning text-base;
+  }
+
+  .reload-recovery-actions {
+    @apply flex gap-2 ml-auto;
+  }
+
+  /* ===============================================
+     Confirm Dialog — Glass Modal
+     =============================================== */
+  [data-theme="releasetes-dark"] .modal-box {
+    background: rgba(16, 16, 28, 0.95);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(129, 140, 248, 0.1);
+    box-shadow: 0 0 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(99, 102, 241, 0.05);
+  }
+
+  /* ===============================================
+     Responsive
+     =============================================== */
+  @media (max-width: 768px) {
+    /* Sidebar: 狭い画面では自動折りたたみ */
+    .app-sidebar {
+      width: 56px;
+    }
+
+    .sidebar-label {
+      @apply hidden;
+    }
+
+    .sidebar-header {
+      @apply justify-center px-0;
+    }
+
+    .sidebar-header .brand {
+      @apply justify-center;
+    }
+
+    .brand-mark,
+    .brand-suffix {
+      @apply hidden;
+    }
+
+    .sidebar-nav {
+      @apply px-1;
+    }
+
+    .sidebar-link {
+      @apply justify-center px-0 py-2.5;
+    }
+
+    .sidebar-footer {
+      @apply px-1;
+    }
+
+    .sidebar-toggle {
+      @apply hidden;
+    }
+
+    .card-body {
+      @apply p-4;
+    }
+
+    .deploy-details-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .table thead th:nth-child(3),
+    .table tbody td:nth-child(3) {
+      @apply hidden;
+    }
+  }
+
+  /* ===============================================
+     Accessibility: Focus (WCAG 2.2 AA)
+     =============================================== */
+  .btn:focus-visible,
+  .input:focus-visible,
+  a:focus-visible {
+    @apply outline-none ring-2 ring-primary/50 ring-offset-2;
+  }
+
+  [data-theme="releasetes-dark"] .btn:focus-visible,
+  [data-theme="releasetes-dark"] .input:focus-visible,
+  [data-theme="releasetes-dark"] a:focus-visible {
+    --tw-ring-offset-color: #0c0c14;
+  }
+
+  @media (prefers-contrast: more) {
+    .btn:focus-visible,
+    .input:focus-visible,
+    a:focus-visible {
+      @apply ring-[3px] ring-black;
+    }
+  }
+
+  /* ===============================================
+     Page Header Section
+     =============================================== */
+  .page-header {
+    @apply mb-6;
+  }
+
+  .page-title {
+    @apply text-xl font-bold text-neutral tracking-tight;
+    font-family: "Space Grotesk", "Inter", sans-serif;
+  }
+
+  .page-description {
+    @apply text-sm text-secondary mt-1;
+  }
+
+  /* ===============================================
+     Settings Card Styles
+     =============================================== */
+  .settings-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    @apply rounded-2xl overflow-hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  .settings-card-header {
+    @apply px-5 py-4 border-b border-base-300/50;
+  }
+
+  /* ===============================================
+     Stat Chip (Service Count etc.)
+     =============================================== */
+  .stat-chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+           bg-base-200/80 text-xs font-medium text-secondary;
+  }
+
+  [data-theme="releasetes-dark"] .stat-chip {
+    background: rgba(129, 140, 248, 0.08);
+    color: #818cf8;
+  }
+
+  /* ===============================================
+     Animations
+     =============================================== */
+  @keyframes progress {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  /* Fade in animation for main content */
+  @keyframes animate-fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: animate-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ===============================================
+     Release Flow Timeline
+     =============================================== */
+  .release-flow-step {
+    @apply flex gap-4 relative;
+  }
+
+  .release-flow-step-indicator {
+    @apply flex flex-col items-center flex-shrink-0;
+  }
+
+  .release-flow-step-icon {
+    @apply w-9 h-9 rounded-lg flex items-center justify-center text-sm flex-shrink-0
+           bg-base-200 text-secondary/60;
+  }
+
+  .release-flow-step-line {
+    @apply w-0.5 flex-1 min-h-[24px] bg-base-300/60;
+  }
+
+  .release-flow-step-content {
+    @apply flex-1 min-w-0 pb-5;
+  }
+
+  .release-flow-step:last-child .release-flow-step-content {
+    @apply pb-1;
+  }
+}

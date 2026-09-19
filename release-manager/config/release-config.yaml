@@ -1,0 +1,32 @@
+services:
+  api-server:
+    app_repo: your-org/your-app/api-server
+    values_file: api-server.yaml
+    argocd_app: your-app-staging-api-server
+    prd_argocd_app: your-app-production-api-server
+    namespace: default
+    tag_prefix: v
+  web-frontend:
+    app_repo: your-org/your-app/web-frontend
+    values_file: web-frontend.yaml
+    argocd_app: your-app-staging-web-frontend
+    prd_argocd_app: your-app-production-web-frontend
+    namespace: default
+    tag_prefix: v
+  worker:
+    app_repo: your-org/your-app/worker
+    values_file: worker.yaml
+    argocd_app: your-app-staging-worker
+    prd_argocd_app: your-app-production-worker
+    namespace: default
+    tag_prefix: v
+
+environments:
+  tes:
+    gitlab:
+      base_url: https://gitlab.example.com
+      project_group: your-org
+  prd:
+    gitlab:
+      base_url: https://gitlab.example.com
+      project_group: your-org

@@ -1,0 +1,592 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ===============================================
+     Theme Custom Properties — Futuristic
+     =============================================== */
+  [data-theme="vercel"] {
+    color-scheme: dark;
+    --bg-body: #08080f;
+    --bg-surface: rgba(15, 15, 25, 0.7);
+    --bg-surface-solid: #10101a;
+    --border-default: rgba(99, 102, 241, 0.12);
+    --border-hover: rgba(99, 102, 241, 0.3);
+    --text-heading: #eef0ff;
+    --text-muted: #7c8194;
+    --text-subtle: #9ca3b8;
+    --shadow-card: 0 0 0 1px rgba(99, 102, 241, 0.06);
+    --shadow-card-hover: 0 8px 32px rgba(99, 102, 241, 0.12),
+      0 0 0 1px rgba(99, 102, 241, 0.2);
+    --hover-bg: rgba(99, 102, 241, 0.06);
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --accent-gradient: linear-gradient(135deg, #06b6d4, #6366f1, #a855f7);
+    --accent-rgb: 99, 102, 241;
+    --accent-glow: rgba(var(--accent-rgb), 0.4);
+    --dot-color: rgba(var(--accent-rgb), 0.07);
+  }
+
+  [data-theme="vercel-light"] {
+    color-scheme: light;
+    --bg-body: #f5f5fa;
+    --bg-surface: rgba(255, 255, 255, 0.85);
+    --bg-surface-solid: #ffffff;
+    --border-default: rgba(99, 102, 241, 0.1);
+    --border-hover: rgba(99, 102, 241, 0.25);
+    --text-heading: #0a0a1a;
+    --text-muted: #64748b;
+    --text-subtle: #475569;
+    --shadow-card: 0 1px 3px rgba(99, 102, 241, 0.06);
+    --shadow-card-hover: 0 8px 24px rgba(99, 102, 241, 0.1),
+      0 0 0 1px rgba(99, 102, 241, 0.15);
+    --hover-bg: rgba(99, 102, 241, 0.04);
+    --accent: #6366f1;
+    --accent-light: #6366f1;
+    --accent-gradient: linear-gradient(135deg, #06b6d4, #6366f1, #a855f7);
+    --accent-rgb: 99, 102, 241;
+    --accent-glow: rgba(var(--accent-rgb), 0.15);
+    --dot-color: rgba(var(--accent-rgb), 0.04);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply m-0 p-0 antialiased text-base-content overflow-x-hidden;
+    font-family: "Inter", "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    background-color: var(--bg-body);
+    background-image: radial-gradient(
+      circle,
+      var(--dot-color) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+    min-height: 100vh;
+  }
+
+  [id^="section-"],
+  #cli-setup {
+    scroll-margin-top: 5rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  .heading {
+    font-family: "Space Grotesk", "Inter", sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  .btn {
+    @apply font-medium text-[13px] tracking-wide;
+  }
+
+  .btn i {
+    @apply leading-none;
+  }
+}
+
+@layer components {
+  /* ===============================================
+     Header — Glassmorphism
+     =============================================== */
+  .app-header {
+    background: var(--bg-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .brand {
+    @apply flex items-center gap-2.5 no-underline;
+  }
+
+  .brand-icon {
+    @apply w-8 h-8 rounded-lg flex items-center justify-center text-sm text-white;
+    background: var(--accent-gradient);
+  }
+
+  .brand-mark {
+    @apply font-bold;
+    font-family: "Space Grotesk", sans-serif;
+    letter-spacing: -0.03em;
+    color: var(--text-heading);
+  }
+
+  .brand-suffix {
+    @apply text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-widest text-white;
+    background: var(--accent);
+  }
+
+  /* ===============================================
+     Hero Section
+     =============================================== */
+  .hero-section {
+    @apply mb-8 text-center relative overflow-hidden;
+  }
+
+  .hero-glow {
+    @apply absolute rounded-full pointer-events-none;
+    filter: blur(100px);
+    opacity: 0.2;
+    z-index: 0;
+  }
+
+  .hero-glow-1 {
+    width: 350px;
+    height: 350px;
+    background: var(--accent);
+    top: 50%;
+    left: 15%;
+    transform: translateY(-70%);
+    animation: glow-float 8s ease-in-out infinite;
+  }
+
+  .hero-glow-2 {
+    width: 280px;
+    height: 280px;
+    background: #06b6d4;
+    top: 50%;
+    right: 15%;
+    transform: translateY(-60%);
+    animation: glow-float 8s ease-in-out infinite reverse;
+  }
+
+  .hero-title {
+    @apply text-2xl sm:text-3xl font-bold mb-1 relative;
+    font-family: "Space Grotesk", sans-serif;
+    letter-spacing: -0.03em;
+    background: var(--accent-gradient);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 6s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  .hero-subtitle {
+    @apply text-sm relative;
+    color: var(--text-muted);
+    z-index: 1;
+  }
+
+  /* ===============================================
+     Section Headers
+     =============================================== */
+  .section-header {
+    @apply mb-4;
+  }
+
+  .section-title {
+    @apply text-base font-semibold mb-0.5;
+    font-family: "Space Grotesk", sans-serif;
+    letter-spacing: -0.02em;
+    color: var(--text-heading);
+  }
+
+  .section-desc {
+    @apply text-xs;
+    color: var(--text-muted);
+  }
+
+  /* ===============================================
+     Cards — Glass + Glow
+     =============================================== */
+  .card-modern {
+    @apply overflow-hidden;
+    background: var(--bg-surface-solid);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-modern:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  /* ===============================================
+     Tool Icon
+     =============================================== */
+  .tool-icon {
+    @apply w-9 h-9 rounded-lg flex items-center justify-center shrink-0;
+    border: 1px solid var(--border-default);
+    background: var(--hover-bg);
+  }
+
+  .tool-icon img {
+    @apply w-full h-full rounded-lg;
+  }
+
+  .tool-icon i {
+    @apply text-base;
+    color: var(--accent-light);
+  }
+
+  .tool-icon-fallback {
+    background: var(--accent-gradient);
+    border-color: transparent;
+  }
+
+  .tool-icon-fallback i {
+    @apply text-white;
+  }
+
+  /* ===============================================
+     Buttons
+     =============================================== */
+  .btn-primary {
+    @apply text-white font-medium border-0;
+    background: var(--accent-gradient);
+    background-size: 200% 200%;
+    transition: background-position 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-position: 100% 0;
+    box-shadow: 0 4px 16px var(--accent-glow);
+  }
+
+  /* ===============================================
+     Badge Pills
+     =============================================== */
+  .badge-pill {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 text-[11px] font-semibold tracking-wide;
+    border-radius: 999px;
+  }
+
+  .badge-pill-type {
+    color: var(--accent-light);
+    background: rgba(var(--accent-rgb), 0.1);
+    border: 1px solid rgba(var(--accent-rgb), 0.15);
+  }
+
+  .badge-pill-soon {
+    color: var(--text-muted);
+    background: var(--hover-bg);
+    border: 1px solid var(--border-default);
+  }
+
+  .badge-pill-featured {
+    @apply px-1.5;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.15);
+  }
+
+  /* ===============================================
+     Footer
+     =============================================== */
+  .app-footer {
+    @apply border-t;
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: var(--border-default);
+  }
+
+  /* ===============================================
+     Sub-link Buttons
+     =============================================== */
+  .sublink-btn {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium
+           rounded-lg border transition-all;
+    border-color: var(--border-default);
+    color: var(--text-subtle);
+    background: transparent;
+  }
+
+  .sublink-btn:hover {
+    border-color: var(--border-hover);
+    background: var(--hover-bg);
+    color: var(--accent-light);
+  }
+
+  /* ===============================================
+     Hero Usecase Bar
+     =============================================== */
+  .usecase-bar {
+    @apply flex flex-wrap items-center justify-center gap-1.5 mt-4 relative;
+    z-index: 1;
+  }
+
+  .usecase-pill {
+    @apply inline-flex items-center gap-1 px-3 py-1 text-xs font-medium
+           rounded-full border no-underline;
+    border-color: var(--border-default);
+    color: var(--text-subtle);
+    background: var(--bg-surface-solid);
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .usecase-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent-light);
+    background: rgba(var(--accent-rgb), 0.08);
+    box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.15);
+  }
+
+  /* ===============================================
+     CLI Setup Banner
+     =============================================== */
+  .cli-banner {
+    @apply rounded-xl overflow-hidden;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface-solid);
+  }
+
+  .cli-banner-toggle {
+    @apply w-full flex items-center justify-between px-5 py-3.5 cursor-pointer
+           transition-all text-left border-0 bg-transparent;
+  }
+
+  .cli-banner-toggle:hover {
+    background: var(--hover-bg);
+  }
+
+  .cli-banner-toggle-left {
+    @apply flex items-center gap-2.5;
+    color: var(--text-heading);
+  }
+
+  .cli-banner-badge {
+    @apply text-[11px] font-semibold px-2 py-0.5 rounded-full;
+    background: rgba(var(--accent-rgb), 0.1);
+    color: var(--accent-light);
+  }
+
+  .cli-banner-body {
+    @apply px-5 pb-5;
+    border-top: 1px solid var(--border-default);
+  }
+
+  .cli-banner-intro {
+    @apply text-sm py-4 mb-0;
+    color: var(--text-muted);
+  }
+
+  .cli-banner-steps {
+    @apply flex flex-col gap-5;
+  }
+
+  .cli-step {
+    @apply flex gap-4;
+  }
+
+  .cli-step-num {
+    @apply w-7 h-7 rounded-full flex items-center justify-center shrink-0
+           text-sm font-bold text-white;
+    background: var(--accent-gradient);
+    margin-top: 2px;
+  }
+
+  .cli-step-content {
+    @apply flex-1 min-w-0;
+  }
+
+  .cli-step-title {
+    @apply text-sm font-semibold mb-1;
+    color: var(--text-heading);
+  }
+
+  .cli-step-desc {
+    @apply text-xs leading-relaxed mb-2;
+    color: var(--text-muted);
+  }
+
+  .cli-link {
+    color: var(--accent-light);
+  }
+
+  .cli-link:hover {
+    text-decoration: underline;
+  }
+
+  .cli-inline-code {
+    @apply px-1 py-0.5 rounded text-[11px];
+    background: var(--hover-bg);
+    border: 1px solid var(--border-default);
+    color: var(--text-heading);
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+  }
+
+  .cli-code-block {
+    @apply flex items-start gap-2 rounded-lg px-3 py-2.5 overflow-x-auto;
+    background: var(--bg-body);
+    border: 1px solid var(--border-default);
+  }
+
+  .cli-code-block code {
+    @apply text-[11px] leading-relaxed flex-1 min-w-0;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    color: var(--text-heading);
+  }
+
+  .cli-code-wrap {
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+
+  .cli-copy-btn {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium
+           rounded border transition-all cursor-pointer shrink-0;
+    border-color: var(--border-default);
+    color: var(--text-subtle);
+    background: transparent;
+  }
+
+  .cli-copy-btn:hover {
+    border-color: var(--border-hover);
+    background: var(--hover-bg);
+  }
+
+  .cli-banner-footer {
+    @apply flex justify-end pt-4 mt-4;
+    border-top: 1px solid var(--border-default);
+  }
+
+  .cli-dismiss-btn {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium
+           rounded-lg border transition-all cursor-pointer;
+    border-color: var(--border-default);
+    color: var(--text-subtle);
+    background: transparent;
+  }
+
+  .cli-dismiss-btn:hover {
+    border-color: var(--border-hover);
+    background: var(--hover-bg);
+  }
+
+  /* ===============================================
+     Install Block
+     =============================================== */
+  .install-toggle-btn {
+    @apply text-white font-medium border-0;
+    background: linear-gradient(135deg, oklch(var(--su)), oklch(var(--su) / 0.85));
+    transition: box-shadow 0.3s ease;
+  }
+
+  .install-toggle-btn:hover {
+    box-shadow: 0 4px 16px oklch(var(--su) / 0.3);
+  }
+
+  .install-toggle-btn-active {
+    box-shadow: 0 4px 16px oklch(var(--su) / 0.3);
+  }
+
+  .install-block {
+    @apply rounded-lg p-3;
+    border: 1px solid var(--border-default);
+    background: var(--hover-bg);
+  }
+
+  .install-block-header {
+    @apply flex items-center justify-between mb-2;
+  }
+
+  .install-block-label {
+    @apply text-[11px] font-semibold uppercase tracking-wider;
+    color: var(--text-muted);
+  }
+
+  .install-copy-btn {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium
+           rounded border transition-all cursor-pointer;
+    border-color: var(--border-default);
+    color: var(--text-subtle);
+    background: transparent;
+  }
+
+  .install-copy-btn:hover {
+    border-color: var(--border-hover);
+    background: var(--hover-bg);
+  }
+
+  .install-block-code {
+    @apply rounded-md px-3 py-2 overflow-x-auto;
+    background: var(--bg-body);
+    border: 1px solid var(--border-default);
+  }
+
+  .install-block-code code {
+    @apply text-[11px] leading-relaxed whitespace-pre;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    color: var(--text-heading);
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+
+  .install-block-note {
+    @apply text-[10px] mt-1.5 mb-0;
+    color: var(--text-muted);
+  }
+
+  /* ===============================================
+     Animations
+     =============================================== */
+  @keyframes animate-fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: animate-fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes gradient-shift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes glow-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(20px);
+    }
+  }
+
+  /* ===============================================
+     Accessibility
+     =============================================== */
+  .btn:focus-visible,
+  a:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    --tw-ring-color: rgba(var(--accent-rgb), 0.5);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

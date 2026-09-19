@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="releasemanager">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Release Manager - PRD MR作成UI" />
+    <title>Promote - Release Manager</title>
+
+    <!-- Favicon (Data URI) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjM2NmYxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOGI1Y2Y2Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0idXJsKCNnKSIvPjxwYXRoIGQ9Ik0xNiA3bDcgN2wtMiAyLTUtNS01IDUtMiAtMnoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNOSAxNmw3IDcgNy03LTItMi01IDUtNS01eiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjciLz48L3N2Zz4K" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- js-yaml for YAML parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  </head>
+  <body>
+    <!-- FOUC防止: テーマ読み込み -->
+    <script>
+      (function() {
+        const THEME_KEY = 'release-manager-theme';
+        const LIGHT_THEME = 'releasemanager';
+        const DARK_THEME = 'releasemanager-dark';
+
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        if (savedTheme) {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } else {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = prefersDark ? DARK_THEME : LIGHT_THEME;
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        if (localStorage.getItem('release-manager-sidebar') === 'collapsed') {
+          document.documentElement.classList.add('sidebar-collapsed');
+        }
+      })();
+    </script>
+    <div class="min-h-screen flex app-shell">
+      <!-- Sidebar -->
+      <aside class="app-sidebar" id="app-sidebar">
+        <div class="sidebar-header">
+          <a href="./" class="brand">
+            <span class="brand-icon">
+              <i class="fas fa-rocket"></i>
+            </span>
+            <span class="brand-mark text-sm sidebar-label">Release</span>
+            <span class="brand-suffix sidebar-label">Manager</span>
+          </a>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="./" class="sidebar-link">
+            <i class="fa-solid fa-list-check"></i>
+            <span class="sidebar-label">Flow</span>
+          </a>
+          <a href="./branch.html" class="sidebar-link">
+            <i class="fa-solid fa-code-branch"></i>
+            <span class="sidebar-label">Branch</span>
+          </a>
+          <a href="./tes.html" class="sidebar-link">
+            <i class="fa-solid fa-rocket"></i>
+            <span class="sidebar-label">Deploy</span>
+          </a>
+          <a href="./prd.html" class="sidebar-link active">
+            <i class="fa-solid fa-arrow-up"></i>
+            <span class="sidebar-label">Promote</span>
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div id="theme-toggle-container"></div>
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="サイドバー切替">
+            <i class="fas fa-angles-left" id="sidebar-toggle-icon"></i>
+            <span class="sidebar-label">たたむ</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="flex-1 min-w-0 px-6 py-8 md:px-12 md:py-10 max-w-6xl w-full mx-auto app-main animate-fade-in">
+        <div id="alert-container"></div>
+
+        <!-- タブ切替 -->
+        <div class="flex items-center gap-4 mb-4">
+          <div role="tablist" class="tabs tabs-bordered tabs-sm">
+            <button role="tab" class="tab tab-active" id="tab-promote" data-tab="promote">
+              <i class="fas fa-arrow-up text-[10px] mr-1"></i>MR作成
+            </button>
+            <button role="tab" class="tab" id="tab-rollback" data-tab="rollback">
+              <i class="fas fa-undo text-[10px] mr-1"></i>ロールバック
+            </button>
+          </div>
+        </div>
+
+        <!-- === PRD MR作成タブ === -->
+        <div id="promote-panel">
+          <!-- Services Card -->
+          <div class="card-modern">
+            <div class="table-wrap">
+              <table class="table" id="services-table">
+                <thead>
+                  <tr>
+                    <th style="width: 40px;">
+                      <label class="cursor-pointer">
+                        <input type="checkbox" class="checkbox checkbox-xs" id="check-all" />
+                      </label>
+                    </th>
+                    <th style="width: 40px;"><span class="sr-only">ステータス</span></th>
+                    <th>サービス名</th>
+                    <th style="width: 140px;">新規タグ</th>
+                    <th style="width: 130px;">PRDバージョン</th>
+                    <th style="width: 100px;">差分</th>
+                  </tr>
+                </thead>
+                <tbody id="services-tbody">
+                  <!-- PromoteUI.renderServiceRows() で動的生成 -->
+                </tbody>
+              </table>
+            </div>
+            <div class="border-t border-base-content/5"></div>
+            <div class="px-5 py-3 flex items-center gap-3">
+              <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                <label for="mr-title-template" class="text-[10px] text-base-content/40 whitespace-nowrap">
+                  MRタイトル
+                </label>
+                <input
+                  type="text"
+                  id="mr-title-template"
+                  class="input input-bordered input-xs flex-1 min-w-0 font-mono text-xs"
+                  placeholder="[PRD] Release"
+                />
+              </div>
+              <div class="flex items-center gap-3 shrink-0" id="batch-action-container">
+                <button class="btn btn-error btn-sm gap-1" id="batch-cancel-btn" style="display: none;">
+                  <i class="fas fa-stop text-[10px]"></i>キャンセル
+                </button>
+                <button class="btn btn-primary btn-sm gap-1.5" id="batch-promote-btn" disabled>
+                  <i class="fas fa-arrow-up text-[10px]"></i>MR作成 (<span id="batch-count">0</span>件)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Promote Details Container -->
+          <div class="deploy-details-grid mt-5" id="deploy-details-container"></div>
+        </div>
+
+        <!-- === ロールバックタブ === -->
+        <div id="rollback-panel" style="display: none;">
+          <!-- Services Card -->
+          <div class="card-modern">
+            <div class="table-wrap">
+              <table class="table" id="rb-services-table">
+                <thead>
+                  <tr>
+                    <th style="width: 40px;"><span class="sr-only">選択</span></th>
+                    <th style="width: 40px;"><span class="sr-only">ステータス</span></th>
+                    <th>サービス名</th>
+                    <th style="width: 130px;">現在PRD</th>
+                    <th style="width: 200px;">ロールバック先</th>
+                  </tr>
+                </thead>
+                <tbody id="rb-services-tbody">
+                  <!-- RollbackUI で動的生成 -->
+                </tbody>
+              </table>
+            </div>
+            <div class="border-t border-base-content/5"></div>
+            <div class="px-5 py-3 flex items-center gap-3">
+              <label class="flex items-center gap-2 cursor-pointer shrink-0">
+                <input type="checkbox" id="rb-check-all" class="checkbox checkbox-xs checkbox-primary" />
+                <span class="text-xs text-base-content/50">全選択</span>
+              </label>
+              <div class="flex-1"></div>
+              <div class="flex items-center gap-3 shrink-0">
+                <button class="btn btn-error btn-sm gap-1" id="rb-batch-cancel-btn" style="display: none;">
+                  <i class="fas fa-stop text-[10px]"></i>キャンセル
+                </button>
+                <button class="btn btn-warning btn-sm gap-1.5" id="rb-batch-rollback-btn" disabled>
+                  <i class="fas fa-undo text-[10px]"></i>ロールバック (<span id="rb-batch-count">0</span>件)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rollback Details Container -->
+          <div class="deploy-details-grid mt-5" id="rb-deploy-details-container"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Confirm Dialog -->
+    <dialog class="modal" id="confirm-dialog">
+      <div class="modal-box max-w-sm rounded-2xl">
+        <h3 class="text-base font-semibold" id="confirm-dialog-title">確認</h3>
+        <div class="py-3 text-sm text-secondary" id="confirm-dialog-body"></div>
+        <div class="modal-action">
+          <button class="btn btn-ghost btn-sm" id="confirm-dialog-cancel">キャンセル</button>
+          <button class="btn btn-primary btn-sm" id="confirm-dialog-ok">OK</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Sidebar toggle -->
+    <script>
+      (function() {
+        var btn = document.getElementById('sidebar-toggle');
+        var icon = document.getElementById('sidebar-toggle-icon');
+        if (document.documentElement.classList.contains('sidebar-collapsed')) {
+          icon.className = 'fas fa-angles-right';
+        }
+        btn.addEventListener('click', function() {
+          document.documentElement.classList.toggle('sidebar-collapsed');
+          var collapsed = document.documentElement.classList.contains('sidebar-collapsed');
+          icon.className = collapsed ? 'fas fa-angles-right' : 'fas fa-angles-left';
+          localStorage.setItem('release-manager-sidebar', collapsed ? 'collapsed' : 'expanded');
+        });
+      })();
+    </script>
+
+    <!-- Vite でビルドされたJSを読み込み -->
+    <script type="module" src="/src/prd-client.tsx"></script>
+  </body>
+</html>

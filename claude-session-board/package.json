@@ -1,0 +1,16 @@
+{
+  "name": "claude-session-board",
+  "private": true,
+  "workspaces": [
+    "web/backend",
+    "web/frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w web/backend\" \"npm run dev -w web/frontend\"",
+    "build": "npm run build -w web/frontend",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

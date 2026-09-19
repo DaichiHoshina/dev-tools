@@ -1,0 +1,124 @@
+stages:
+  - build
+  - deploy
+
+workflow:
+  rules:
+    # deploy/sync job: SERVICE_NAME に値が入っていればデプロイモード
+    - if: $SERVICE_NAME != ""
+    # 通常: ブランチプッシュ時にUI build/pages
+    - if: $CI_COMMIT_BRANCH
+
+variables:
+  NODE_VERSION: "20"
+  # Base path for GitLab Pages deployment (set to your actual Pages subpath)
+  VITE_BASE_PATH: "/release-manager/"
+  SERVICE_NAME:
+    value: ""
+    description: "サービス名 (カンマ区切りで複数可, all=差分がある全サービス) 例: api-server,web-frontend,worker"
+  VERSION:
+    value: "auto"
+    description: "バージョン (例: 1.2.3)。auto=自動計算。昇格時は不要"
+  TARGET:
+    value: "tes,prd"
+    description: "デプロイ先 (tes, prd, tes,prd)"
+  ARGOCD_SYNC:
+    value: ""
+    description: "ArgoCD Sync実行 (true=Sync実行)"
+  ARGOCD_GET_TAG:
+    value: ""
+    description: "ArgoCD ライブtag取得 (true=取得実行)"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  image: node:${NODE_VERSION}-alpine
+  rules:
+    - if: $SERVICE_NAME != ""
+      when: never
+    - if: $CI_COMMIT_BRANCH
+  script:
+    - npm ci
+    - npm run type-check
+    - npm run build
+    # トークンをHTMLに埋め込み
+    - |
+      CONFIG_SCRIPT="<script>window.RELEASE_MANAGER_CONFIG={TRIGGER_TOKEN:\"${PIPELINE_TRIGGER_TOKEN}\",READ_TOKEN:\"${READ_TOKEN}\",INFRA_GITLAB_TOKEN:\"${INFRA_GITLAB_TOKEN}\"};</script>"
+      for f in dist/tes.html dist/prd.html dist/branch.html; do sed -i "s|</head>|${CONFIG_SCRIPT}</head>|" "$f"; done
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $SERVICE_NAME != ""
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  needs:
+    - build
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  rules:
+    - if: $ARGOCD_SYNC == "true"
+      when: never
+    - if: $ARGOCD_GET_TAG == "true"
+      when: never
+    - if: $TARGET =~ /tes/ && $SERVICE_NAME != ""
+  before_script:
+    - apk add --no-cache curl jq bash sed
+  script:
+    - bash scripts/deploy-multi.sh
+  timeout: 70m
+
+promote:
+  stage: deploy
+  image: alpine:latest
+  needs:
+    - job: deploy
+      optional: true
+  rules:
+    - if: $ARGOCD_SYNC == "true"
+      when: never
+    - if: $ARGOCD_GET_TAG == "true"
+      when: never
+    - if: $TARGET =~ /prd/ && $SERVICE_NAME != ""
+  before_script:
+    - apk add --no-cache curl jq bash sed
+  script:
+    - bash scripts/promote-multi.sh
+  timeout: 10m
+
+argocd-sync:
+  stage: deploy
+  image: alpine:latest
+  rules:
+    - if: $ARGOCD_SYNC == "true" && $SERVICE_NAME != ""
+  before_script:
+    - apk add --no-cache curl jq bash
+  script:
+    - bash scripts/argocd-sync.sh
+  timeout: 10m
+
+argocd-get-tag:
+  stage: deploy
+  image: alpine:latest
+  rules:
+    - if: $ARGOCD_GET_TAG == "true" && $SERVICE_NAME != ""
+  before_script:
+    - apk add --no-cache curl jq bash
+  script:
+    - bash scripts/argocd-get-tag.sh
+  timeout: 3m
