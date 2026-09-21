@@ -24,6 +24,7 @@ import { ThemeToggle } from "./components/ThemeToggle";
 import { TabTitleManager } from "./lib/ui/tab-title-manager";
 import { NotificationService } from "./lib/ui/notification-service";
 import { MrTitleTemplateStorage, MR_TITLE_PRESETS } from "./lib/storage";
+import { setupTokenSettings } from "./lib/ui/token-settings";
 
 console.log("Release TES PRD Promote UI v2.0.0");
 
@@ -783,6 +784,7 @@ function initTabs(rollbackUI: RollbackUI): void {
 // --- 初期化 ---
 
 document.addEventListener("DOMContentLoaded", () => {
+  setupTokenSettings();
   new PromoteUI();
   const rollbackUI = new RollbackUI();
   initTabs(rollbackUI);

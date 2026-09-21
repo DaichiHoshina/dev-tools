@@ -14,10 +14,22 @@ shellcheck:
   image: koalaman/shellcheck-alpine:stable
   script:
     - shellcheck -x kube-deploy.sh lib/*.sh
+    - shellcheck -x bash/kube-deploy.sh bash/lib/*.sh
   rules:
     - changes:
         - "*.sh"
         - "lib/*.sh"
+        - "bash/**/*.sh"
+
+go-test:
+  stage: lint
+  image: golang:1.22-alpine
+  script:
+    - go test ./...
+  rules:
+    - changes:
+        - "**/*.go"
+        - "go.mod"
 
 workflow:
   rules:

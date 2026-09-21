@@ -35,7 +35,7 @@ https://your-domain.example.com/devtools/devtools-home/
 
 ## 技術スタック
 
-- React + Vite + Tailwind CSS
+- Hono JSX (`hono/jsx/dom`) + Vite + Tailwind CSS + DaisyUI
 - TypeScript
 - GitLab Pages
 

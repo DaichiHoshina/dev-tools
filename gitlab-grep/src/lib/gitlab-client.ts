@@ -13,8 +13,38 @@ const GITLAB_API_BASE = import.meta.env.DEV
   ? "/gitlab-api/api/v4"
   : `${import.meta.env.VITE_GITLAB_URL || "https://gitlab.example.com"}/api/v4`;
 
-function getToken(): string {
-  return import.meta.env.VITE_GITLAB_TOKEN ?? "";
+// トークンの保存先。VITE_ prefix の env はビルド時に JS へ展開されるため、
+// 配信物からトークンを読み取れてしまう。利用者が入力した値をこのブラウザに
+// だけ保存する。
+const TOKEN_STORAGE_KEY = "gitlab-grep:token";
+
+export function getToken(): string {
+  try {
+    const stored = localStorage.getItem(TOKEN_STORAGE_KEY);
+    if (stored) return stored;
+  } catch {
+    // Storage が使用不可なら env 側の値へ進む
+  }
+  // ローカル開発で .env に置いた値を使うための経路。
+  // import.meta.env.DEV は本番ビルドで false に置換され、この分岐ごと
+  // 削除されるため、配信物に VITE_GITLAB_TOKEN の値は出力されない。
+  if (import.meta.env.DEV) {
+    return import.meta.env.VITE_GITLAB_TOKEN ?? "";
+  }
+  return "";
+}
+
+export function setToken(token: string): void {
+  try {
+    const trimmed = token.trim();
+    if (trimmed) {
+      localStorage.setItem(TOKEN_STORAGE_KEY, trimmed);
+    } else {
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+    }
+  } catch {
+    // 保存できない場合はこのタブ内だけの設定として扱う
+  }
 }
 
 async function gitlabFetch<T>(path: string, options?: RequestInit): Promise<T> {

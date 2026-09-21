@@ -30,6 +30,7 @@ import {
 } from "./lib/storage";
 import { TabTitleManager } from "./lib/ui/tab-title-manager";
 import { NotificationService } from "./lib/ui/notification-service";
+import { setupTokenSettings } from "./lib/ui/token-settings";
 
 console.log("Release TES リリース UI v3.2.0");
 
@@ -1022,6 +1023,7 @@ class DeployUI {
 
 // 初期化
 document.addEventListener("DOMContentLoaded", () => {
+  setupTokenSettings();
   new DeployUI();
 
   // ThemeToggleをマウント

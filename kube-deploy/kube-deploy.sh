@@ -1,4 +1,4 @@
-#!/opt/homebrew/bin/bash
+#!/usr/bin/env bash
 # kube-deploy — dev環境イメージオーバーライドCLI
 #
 # Usage:

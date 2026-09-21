@@ -17,6 +17,12 @@
 - macOS（iTerm2 連携機能を使う場合は iTerm2 が必要）
 - `~/.claude/projects/` に Claude Code のセッションデータが存在すること
 
+## セキュリティ上の前提
+
+インタラクティブターミナル (`/ws/terminal`) は認証なしでシェルを起動する。
+そのためバックエンドは `127.0.0.1` でのみ待ち受け、WebSocket の接続元 Origin を
+照合している。`HOST` を書き換えて外部から到達できる状態にしないこと。
+
 ## セットアップ
 
 ```bash
@@ -38,6 +44,7 @@ npm run dev
 | 変数名 | 説明 | デフォルト |
 |--------|------|-----------|
 | `CLAUDE_DIR` | Claude Code のプロジェクトデータディレクトリ | `~/.claude/projects` |
+| `HOST` | バックエンド API の待ち受けアドレス | `127.0.0.1` |
 | `PORT` | バックエンド API のポート番号 | `3010` |
 | `ATLASSIAN_SITE_NAME` | Atlassian サイト名（例: `your-org`） | `your-org` |
 | `ATLASSIAN_USER_EMAIL` | Atlassian アカウントのメールアドレス | （空欄時は Jira 連携無効） |

@@ -1,10 +1,19 @@
 import { useState, useEffect } from "hono/jsx/dom";
 import { DARK_THEME, LIGHT_THEME, STORAGE_KEY } from "~/lib/theme";
+import { getToken, setToken } from "~/lib/gitlab-client";
 
 export function Header() {
   const [isDark, setIsDark] = useState(() => {
     return document.documentElement.getAttribute("data-theme") !== LIGHT_THEME;
   });
+  const [tokenDraft, setTokenDraft] = useState<string>(() => getToken());
+  const [tokenOpen, setTokenOpen] = useState(false);
+
+  const saveToken = () => {
+    setToken(tokenDraft);
+    setTokenOpen(false);
+    location.reload();
+  };
 
   useEffect(() => {
     const theme = isDark ? DARK_THEME : LIGHT_THEME;
@@ -64,6 +73,19 @@ export function Header() {
           />
         </button>
 
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm btn-square rounded-lg text-neutral/60 hover:text-neutral hover:bg-white/5"
+          title="GitLab トークン設定"
+          aria-label="GitLab トークン設定"
+          onClick={() => {
+            setTokenDraft(getToken());
+            setTokenOpen(true);
+          }}
+        >
+          <i class="fa-solid fa-key" aria-hidden="true" />
+        </button>
+
         <a
           href="/application/tools/devtools/devtools-home/"
           class="btn btn-ghost btn-sm btn-square rounded-lg text-neutral/60 hover:text-neutral hover:bg-white/5"
@@ -73,6 +95,42 @@ export function Header() {
           <i class="fas fa-home" aria-hidden="true" />
         </a>
       </div>
+
+      {tokenOpen && (
+        <div class="modal modal-open">
+          <div class="modal-box max-w-md">
+            <h3 class="font-semibold text-base mb-1">GitLab トークン設定</h3>
+            <p class="text-xs opacity-60 mb-4">
+              入力したトークンはこのブラウザにのみ保存します。共有端末では作業後に空欄で保存してください。
+            </p>
+            <input
+              type="password"
+              value={tokenDraft}
+              onInput={(e) => setTokenDraft((e.target as HTMLInputElement).value)}
+              class="input input-bordered input-sm w-full font-mono"
+              placeholder="glpat-..."
+              autocomplete="off"
+              spellcheck={false}
+            />
+            <div class="modal-action">
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                onClick={() => setTokenOpen(false)}
+              >
+                閉じる
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                onClick={saveToken}
+              >
+                保存
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

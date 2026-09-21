@@ -6,5 +6,4 @@ dist/
 .idea/
 .serena/
 .claude/
-go.sum
 CLAUDE.md

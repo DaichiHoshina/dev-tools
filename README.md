@@ -24,9 +24,17 @@
 
 ## 共通技術スタック
 
-- **Web UI**: Hono JSX / React + Vite + Tailwind CSS + DaisyUI + TypeScript
+- **Web UI**: Vite + Tailwind CSS + DaisyUI + TypeScript
+  - Hono JSX: devtools-home / gitlab-grep / kube-lens / release-manager
+  - React: manual-creater / sql-studio / claude-session-board
 - **CLI**: Go 1.22+ / Bash 4.3+
 - **インフラ連携**: kubectl, ArgoCD, GitLab CI/CD
+
+## トークンの扱い
+
+GitLab トークンをビルド成果物に含めない。各ツールの画面から利用者が入力し、
+利用者のブラウザ (localStorage) にのみ保存する。CI の変数としてトークンを
+build job に渡さないこと。
 
 ## セットアップ
 

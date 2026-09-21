@@ -1,6 +1,7 @@
 import { useState } from "hono/jsx/dom";
 import type { K8sConfig } from "~/lib/types";
 import type { K8sClient } from "~/lib/k8s-client";
+import { getReadToken, setReadToken } from "~/lib/gitlab-base";
 
 interface Props {
   config: K8sConfig;
@@ -27,6 +28,7 @@ export function ConnectionSettings({ config, client, onSave }: Props) {
     "idle" | "testing" | "ok" | "error"
   >("idle");
   const [saved, setSaved] = useState<boolean>(false);
+  const [gitlabToken, setGitlabToken] = useState<string>(() => getReadToken());
 
   const handleTestConnection = async () => {
     setTestStatus("testing");
@@ -50,6 +52,7 @@ export function ConnectionSettings({ config, client, onSave }: Props) {
       refreshInterval,
     };
     onSave(newConfig);
+    setReadToken(gitlabToken);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -178,6 +181,33 @@ export function ConnectionSettings({ config, client, onSave }: Props) {
           />
           <p class="text-xs" style="color: var(--text-subtle)">
             カンマ区切りで複数指定可。各ページのセレクターでも切り替えできます。
+          </p>
+        </div>
+      </div>
+
+      {/* GitLab トークン */}
+      <div class="card-modern p-5">
+        <h3
+          class="text-sm font-semibold mb-4"
+          style="color: var(--text-heading)"
+        >
+          GitLab トークン
+        </h3>
+        <div class="space-y-2">
+          <input
+            type="password"
+            value={gitlabToken}
+            onInput={(e) =>
+              setGitlabToken((e.target as HTMLInputElement).value)
+            }
+            class="search-input w-full font-mono"
+            placeholder="glpat-..."
+            autocomplete="off"
+            spellcheck={false}
+          />
+          <p class="text-xs" style="color: var(--text-subtle)">
+            イメージ差し替えと MR
+            参照で使う読み取り用トークンです。このブラウザにのみ保存します。共有端末では作業後に空欄で保存してください。
           </p>
         </div>
       </div>

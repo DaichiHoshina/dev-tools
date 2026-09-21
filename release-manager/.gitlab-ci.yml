@@ -44,11 +44,10 @@ build:
   script:
     - npm ci
     - npm run type-check
+    - npm test
     - npm run build
-    # トークンをHTMLに埋め込み
-    - |
-      CONFIG_SCRIPT="<script>window.RELEASE_MANAGER_CONFIG={TRIGGER_TOKEN:\"${PIPELINE_TRIGGER_TOKEN}\",READ_TOKEN:\"${READ_TOKEN}\",INFRA_GITLAB_TOKEN:\"${INFRA_GITLAB_TOKEN}\"};</script>"
-      for f in dist/tes.html dist/prd.html dist/branch.html; do sed -i "s|</head>|${CONFIG_SCRIPT}</head>|" "$f"; done
+    # トークンは配信物に含めない。利用者が画面右下の鍵ボタンから入力し、
+    # 各自のブラウザ (localStorage) に保存する。
   artifacts:
     paths:
       - dist/

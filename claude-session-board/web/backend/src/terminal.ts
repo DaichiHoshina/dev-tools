@@ -30,14 +30,25 @@ function isAllowedCommand(cmd: string): boolean {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function setupTerminalWebSocket(server: {
-  on: (...args: any[]) => void;
-}): void {
+export function setupTerminalWebSocket(
+  server: {
+    on: (...args: any[]) => void;
+  },
+  allowedOrigins: readonly string[],
+): void {
   const wss = new WebSocketServer({ noServer: true });
 
   server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
     const url = new URL(req.url ?? "", `http://${req.headers.host}`);
     if (url.pathname !== "/ws/terminal") {
+      socket.destroy();
+      return;
+    }
+    // Origin なしの接続 (curl / 他プロセス) と別オリジンからの接続を拒否する。
+    // この endpoint はシェルを起動するため、ブラウザ以外からの接続を通さない。
+    const origin = req.headers.origin;
+    if (!origin || !allowedOrigins.includes(origin)) {
+      socket.write("HTTP/1.1 403 Forbidden\r\n\r\n");
       socket.destroy();
       return;
     }

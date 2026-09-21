@@ -37,6 +37,14 @@ if (existsSync(envPath)) {
 const CLAUDE_DIR =
   process.env.CLAUDE_DIR ?? join(homedir(), ".claude", "projects");
 const PORT = Number(process.env.PORT ?? 3010);
+// /ws/terminal が認証なしでシェルを起動するため、既定はループバックに限定する。
+const HOST = process.env.HOST ?? "127.0.0.1";
+// WebSocket の upgrade には CORS 設定が適用されないので、Origin をここで照合する。
+const ALLOWED_ORIGINS = [
+  "http://localhost:5174",
+  "http://localhost:5173",
+  "http://127.0.0.1:5174",
+];
 
 // ===== Types =====
 
@@ -1272,9 +1280,9 @@ app.post("/api/launch", async (c) => {
 });
 
 const server = createServer(getRequestListener(app.fetch));
-setupTerminalWebSocket(server);
+setupTerminalWebSocket(server, ALLOWED_ORIGINS);
 
-server.listen(PORT, () => {
-  console.log(`Claude Session Board API running on http://localhost:${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`Claude Session Board API running on http://${HOST}:${PORT}`);
   console.log(`Data directory: ${CLAUDE_DIR}`);
 });

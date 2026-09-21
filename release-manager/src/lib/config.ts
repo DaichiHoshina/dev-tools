@@ -1,5 +1,7 @@
 // 設定定数（TypeScript版）
 
+import { getToken } from "./token-store";
+
 declare global {
   interface Window {
     RELEASE_MANAGER_CONFIG?: {
@@ -19,13 +21,13 @@ export const CONFIG = {
   },
   PIPELINE: {
     get TRIGGER_TOKEN() {
-      return window.RELEASE_MANAGER_CONFIG?.TRIGGER_TOKEN || "";
+      return getToken("TRIGGER_TOKEN");
     },
     get READ_TOKEN() {
-      return window.RELEASE_MANAGER_CONFIG?.READ_TOKEN || "";
+      return getToken("READ_TOKEN");
     },
     get INFRA_GITLAB_TOKEN() {
-      return window.RELEASE_MANAGER_CONFIG?.INFRA_GITLAB_TOKEN || "";
+      return getToken("INFRA_GITLAB_TOKEN");
     },
     TRIGGER_URL:
       "https://gitlab.example.com/api/v4/projects/your-org%2Ftools%2Frelease-manager/trigger/pipeline",

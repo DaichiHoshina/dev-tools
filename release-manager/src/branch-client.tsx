@@ -4,6 +4,7 @@ import { AlertManager } from "./lib/ui/alert-manager";
 import { DialogManager } from "./lib/ui/dialog-manager";
 import { render } from "hono/jsx/dom";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { setupTokenSettings } from "./lib/ui/token-settings";
 
 console.log("Release Manager Branch Creator v1.0.0");
 
@@ -404,6 +405,7 @@ class BranchUI {
 
 // 初期化
 document.addEventListener("DOMContentLoaded", () => {
+  setupTokenSettings();
   new BranchUI();
 
   // ThemeToggleをマウント
