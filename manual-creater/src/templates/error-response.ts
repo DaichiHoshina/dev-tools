@@ -182,7 +182,7 @@ export const errorResponse: Template = {
           id: "escalation_to",
           label: "エスカレーション先",
           type: "textarea",
-          placeholder: "例: インフラチームリーダー → PM → 三井物産様",
+          placeholder: "例: インフラチームリーダー → PM → 担当者様",
         },
         {
           id: "known_issues",
